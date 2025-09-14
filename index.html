@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Infinity Visualizer</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>Infinity Visualizer</h1>
+        <div class="controls">
+            <label>Mandelbrot <input type="radio" name="fractal" value="mandelbrot" checked></label>
+            <label>Julia <input type="radio" name="fractal" value="julia"></label>
+            <label>Zoom: <input type="range" id="zoom" min="1" max="500" value="200"></label>
+        </div>
+        <canvas id="fractalCanvas"></canvas>
+        <script src="renderer.js"></script>
+    </body>
+</html>
