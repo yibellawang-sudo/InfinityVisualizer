@@ -1,4 +1,4 @@
-const { app, BrowerWindow } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
 function createWindow() {
