@@ -35,15 +35,12 @@ void main() {
     vec2 c;
     vec2 z;
 
-    if(u_type == 0) { //Mandelbrot
+    if(u_type == 0) { //Mandelbrot or Multibrot
         c = uv * u_zoom + u_offset;
         z = vec2(0.0, 0.0);
     } else if(u_type == 1) { //julia
         c = u_julia;
         z = uv * u_zoom + u_offset;
-    } else if(u_type == 2) { //multibrot
-        c = uv * u_zoom + u_offset;
-        z = vec2(0.0, 0.0);
     } else { //burning ship
         c = uv * u_zoom + u_offset;
         z = vec2(0.0, 0.0);
@@ -53,10 +50,10 @@ void main() {
     int i = 0;
 
     for(int n = 0; n < maxIter; n++) {
-        if(u_type == 3) { //burning ship
+        if(u_type == 2) { //burning ship
             z = vec2(abs(z.x), abs(z.y));
             z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
-        } else if (u_type == 2) { //multibrot
+        } else if (u_type == 0) { //mandelbrot or multibrot
             float r = length(z);
             float theta = atan(z.y, z.x);
             if (r > 0.0) {
@@ -64,7 +61,7 @@ void main() {
             } else {
                 z = c;
             }
-        } else { //Mandelbrot and or julia
+        } else { // julia
             z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
         }
 
@@ -106,7 +103,28 @@ function createProgram(vs, fs) {
     }
     return program;
 }
-
+const fractalInfo = {
+    0:`
+    <b>Mandelbrot / Multibrot Set</b><br>
+    The Mandelbrot set is defined by iterating:
+    <code>z -> z^2 + c</code>, starting with z=0.<br><br>
+    The <b>Multibrot</b> generalizes this to:
+    <code>z -> z^p + c</code>, where p is any power (2, 3, 4...).<br>
+    <br>
+    These sets reveal self-similar, infinitely detailed boundaries.
+    `,
+    1: `
+    <b>Julia Set</b><br>
+    For each point z, iterate:
+    <code>z -> z^2 + c</code> with a fixed complex constant c.<br><br>
+    Julia sets are closely related to Mandelbrot: every point in the mandelrot set corresponds to a connected Julia set.
+    `,
+    3: `
+    <b>Burning Ship Fractal</b><br>
+    This fractal is definied by <code>z -> (|Re(z)| + i|Im(z)|)^2 + c</code><br><br>
+    The absolute values create sharp, ship-like structures unlike the smooth Mandelbrot/Julia boundaries.
+    `
+};
 const vertexShader = createShader(gl.VERTEX_SHADER, vertexShaderSrc);
 const fragmentShader = createShader(gl.FRAGMENT_SHADER, fragmentShaderSrc);
 const program = createProgram(vertexShader, fragmentShader);
@@ -171,6 +189,11 @@ window.addEventListener('resize', () => {
 //controls
 document.getElementById('fractalType').addEventListener('change', e=> {
     fractalType = parseInt(e.target.value);
+
+    let displayType = fractalType === 2 ? 0 : fractalType;
+
+    document.getElementById('fractalDescription').innerHTML = 
+        fractalInfo[displayType] || "Fractal description not available.";
     render();
 });
 document.getElementById('juliaCx').addEventListener('input', e => {
@@ -185,7 +208,24 @@ document.getElementById('power').addEventListener('input', e => {
     power = parseFloat(e.target.value);
     render();
 });
+document.getElementById('fractalDescription').innerHTML = fractalInfo[0];
+
+document.querySelectorAll('.section .box').forEach(box => {
+    section.addEventListener('click',  () => {
+        const section = box.parentElement;
+
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('expanded'));
+        section.classList.add('expanded');
+    });
+});
+
+document.querySelectorAll('.section').forEach(section => {
+    section.addEventListener('click', e => {
+        if (section.classList.contains('expanded') && e.target === section) {
+            section.classList.remove('expanded');
+        }
+    });
+});
 
 render();
 
-// create info boxes that explain what fractals are, the math behind each specific type of fractal, and combine the mandelbrot and multibrot into one

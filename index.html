@@ -2,24 +2,37 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Infinity Visualizer</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <h1>Infinity Visualizer</h1>
-        <div class="controls">
-            <select id="fractalType">
-                <option value="0">Mandelbrot</option>
-                <option value="1">Julia</option>
-                <option value="2">Multibrot</option>
-                <option value="3">Burning Ship</option>
-            </select>
-            <label>Zoom: <input type="range" id="zoom" min="1" max="500" value="200"></label>
-            <label>Julia cx: <input type="range" id="juliaCx" min="-1" max="1" step="0.001" value="-0.7"></label>
-            <label>Julia cy: <input type="range" id="juliaCy" min="-1" max="1" step="0.001" value="0.27015"></label>
-            <label>Power: <input type="range" id="power" min="2" max="9" step="0.1" value="2"></label>
+        <header class="hero">
+            <div class="overlay">
+                <h1>Fractals: Visualize Infinity</h1>
+                <p>Discover the beauty of mathematics, patterns, and infinite complexity.</p>
+                <a href="visualizer.html" class="btn">Explore the Visualizer</a>
+            </div>
+        </header>
+
+        <div class="sections-container">
+            <section class="section intro">
+                <div class="box">What are Fractals?</div>
+                <p>filler</p>
+            </section>
+
+            <section class="section history">
+                <div class="box">History & Origins</div>
+                <p>filler</p>
+            </section>
+
+            <section class="section applications">
+                <div class="box">Learn More</div>
+                <p>
+                    <a href="#" target="_blank">link</a><br>
+                    <a href="#" target="_blank">link</a>
+                </p>
+            </section>
         </div>
-        <canvas id="fractalCanvas"></canvas>
-        <script src="renderer.js"></script>
     </body>
 </html>
