@@ -103,6 +103,30 @@ function createProgram(vs, fs) {
     }
     return program;
 }
+
+const sections = document.querySelectorAll('.section');
+
+sections.forEach(section => {
+    const box = section.querySelector('.box');
+    const closeBtn = box.querySelector('.close-btn');
+
+    box.addEventListener('click', e => {
+        e.stopPropagation();
+        // Collapse all other sections first
+        sections.forEach(s => s.classList.remove('expanded'));
+        section.classList.add('expanded');
+    });
+
+    closeBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        section.classList.remove('expanded');
+    });
+});
+
+document.body.addEventListener('click', () => {
+    sections.forEach(s => s.classList.remove('expanded'));
+});
+
 const fractalInfo = {
     0:`
     <b>Mandelbrot / Multibrot Set</b><br>
@@ -119,12 +143,37 @@ const fractalInfo = {
     <code>z -> z^2 + c</code> with a fixed complex constant c.<br><br>
     Julia sets are closely related to Mandelbrot: every point in the mandelrot set corresponds to a connected Julia set.
     `,
-    3: `
+    2: `
     <b>Burning Ship Fractal</b><br>
     This fractal is definied by <code>z -> (|Re(z)| + i|Im(z)|)^2 + c</code><br><br>
     The absolute values create sharp, ship-like structures unlike the smooth Mandelbrot/Julia boundaries.
     `
 };
+const infoBox = document.getElementById("infoBox");
+const description = document.getElementById("fractalDescription");
+
+document.getElementById('fractalType').addEventListener('change', e => {
+    fractalType = parseInt(e.target.value);
+    description.innerHTML= fractalInfo[fractalType] || "No info found";
+    render();
+});
+description.innerHTML = fractalInfo[0];
+
+let isDraggingBox = false;
+let offsetXBox, offsetYBox;
+infoBox.addEventListener('mousedown', (e) => {
+    isDraggingBox = true;
+    offsetXBox = e.clientX - infoBox.offsetLeft;
+    offsetYBox = e.clientY - infoBox.offsetTop;
+});
+infoBox.addEventListener('mousemove', (e) =>{
+    if(isDraggingBox) {
+        infoBox.style.left = (e.clientX - offsetXBox) + "px";
+        infoBox.style.top = (e.clientY - offsetYBox) + "px";
+    }
+});
+document.addEventListener('mouseup', () => isDraggingBox=false);
+
 const vertexShader = createShader(gl.VERTEX_SHADER, vertexShaderSrc);
 const fragmentShader = createShader(gl.FRAGMENT_SHADER, fragmentShaderSrc);
 const program = createProgram(vertexShader, fragmentShader);
@@ -163,9 +212,11 @@ function render() {
 
 // --- Interaction ---
 let isDragging = false, startX, startY;
-canvas.addEventListener('mousedown', e => { isDragging = true; startX=e.clientX; startY=e.clientY; });
-canvas.addEventListener('mouseup', () => isDragging=false);
-canvas.addEventListener('mouseleave', () => isDragging=false);
+canvas.addEventListener('mousedown', e => { 
+    isDragging = true; 
+    startX=e.clientX; 
+    startY=e.clientY; 
+});
 canvas.addEventListener('mousemove', e => {
     if(isDragging) {
         offsetX -= (e.clientX-startX) / (canvas.height*0.5) * zoom;
@@ -174,6 +225,9 @@ canvas.addEventListener('mousemove', e => {
         render();
     }
 });
+canvas.addEventListener('mouseup', () => isDragging=false);
+canvas.addEventListener('mouseleave', () => isDragging=false);
+
 
 canvas.addEventListener('wheel', e => {
     zoom *= (e.deltaY>0)?1.1:0.9;
@@ -191,9 +245,9 @@ document.getElementById('fractalType').addEventListener('change', e=> {
     fractalType = parseInt(e.target.value);
 
     let displayType = fractalType === 2 ? 0 : fractalType;
-
+/*
     document.getElementById('fractalDescription').innerHTML = 
-        fractalInfo[displayType] || "Fractal description not available.";
+        fractalInfo[displayType] || "Fractal description not available."; */
     render();
 });
 document.getElementById('juliaCx').addEventListener('input', e => {
@@ -208,24 +262,8 @@ document.getElementById('power').addEventListener('input', e => {
     power = parseFloat(e.target.value);
     render();
 });
-document.getElementById('fractalDescription').innerHTML = fractalInfo[0];
-
-document.querySelectorAll('.section .box').forEach(box => {
-    section.addEventListener('click',  () => {
-        const section = box.parentElement;
-
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('expanded'));
-        section.classList.add('expanded');
-    });
-});
-
-document.querySelectorAll('.section').forEach(section => {
-    section.addEventListener('click', e => {
-        if (section.classList.contains('expanded') && e.target === section) {
-            section.classList.remove('expanded');
-        }
-    });
-});
 
 render();
 
+//info boxes on homescreen still doesn't expand
+//add actual info text
