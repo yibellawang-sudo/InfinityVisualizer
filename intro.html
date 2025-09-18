@@ -1,108 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>✦ Introduction to Fractals ✦</title>
-        <style>
-            body{
-                margin: 0;
-                font-family: 'Times New Roman', serif;
-                color: #eee;
-                background: linear-gradient(120deg, #ff4d4d, #4d79ff, #33cc33);
-                background-size: 400% 400%;
-                animation: gradientShift 15s ease infinite;
-                line-height: 1.8;
-            }
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>✦ Introduction to Fractals ✦</title>
+<style>
+  :root{
+    --accent: #2efbfe;
+    --dark-trans: rgba(0,0,0,0.72);
+  }
 
-            @keyframes gradientShift{
-                0% {background-position: 0% 50%;};
-                50% {background-position: 100% 50%};
-                100% {background-position: 0% 50%};
-            }
+  html,body {
+    height:100%;
+    margin:0;
+    font-family:"Times New Roman",serif;
+    background: linear-gradient(120deg,#ff4d4d,#4d79ff,#33cc33);
+    background-size:400% 400%;
+    animation:gradientShift 15s linear infinite;color:#eee;
+ }
 
-            header {
-                text-align: center;
-                font-size:2.8rem;
-                padding: 25px;
-                color: white;
-                text-shadow:hsl(from color h s l)
-            }
+  @keyframes blobMorph{
+    0%,100%{border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%; }
+    33%{border-radius: 55% 45% 45% 55% / 60% 50% 40% 50%; }
+    66% { border-radius: 40% 60% 50% 50% / 45% 55% 55% 45%; }
+  }
+  .bubble {
+    animation: bloMorph 10s ease-in-out infinite;
+  }
 
-            .content {
-                max-width: 900px;
-                margin: auto;
-                background: rgba(0,0,0,0.7);
-                padding: 10px 30px;
-                border-radius: 16px;
-                box-shadow: 0.8px 20px rgba(0,0,0,0.5);
-                font-size: 1rem;
-            }
+  header{
+    text-align:center;
+    padding:36px 20px 6px;
+    font-size:2.6rem;
+    color:#fff;
+    text-shadow:0 6px 18px rgba(0,0,0,0.6);
+  }
 
-            h2 {
-                margin-top: 30px;
-                font-size: 2rem;
-                color: #3efbfe;
-            }
+  /* bubble area */
+  .bubble-container{
+    box-sizing:border-box;
+    width:100%;
+    min-height:calc(100vh - 120px);
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    align-items:center;
+    gap:28px;
+    padding:28px;
+    position:relative;
+  }
 
-            p {
-                margin-top: 15px;
-            }
+  .bubble{
+    --size:200px;
+    width:var(--size);
+    height:var(--size);
+    border-radius:50%;
+    background:var(--dark-trans);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 18px;
+    box-shadow:0 12px 26px rgba(0,0,0,0.45);
+    cursor:pointer;
+    transition: all .35s ease;
+    overflow:hidden;
+    position:relative;
+    
+    border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%;
+  }
 
-            .nav a {
-                margin: 0px;
-                text-decoration: none;
-                color: white;
-                font-weight: bold;
-                padding: 10px 20px;
-                border-radius: 8px;
-                background: rgba(0,0,0,0.6);
-                transition: all 0.3s ease;
-            }
+  .bubble:hover{ transform: scale(1.08); z-index:6; }
 
-            .nav a:hover{
-                background: #2efbfe;
-                color: black;
-            }
-        </style>
-    </head>
-    <body>
-        <header>
-            What is a Fractal?
-        </header>
-        <div class="content">
-            <p>A <strong>fractal</strong> is a shape ot pattern that repeats its structure at different scales, 
-            a propoerty call <strong>self-similarity</strong>. Zoom in on a fractal, and you'll keep discovering new
-            details that resemble the whole. This makes fractals both mathematically fascinating and visually stunning
-            </p>
+  .bubble h3{
+    margin:0;
+    color:var(--accent);
+    font-size:1.05rem;
+    line-height:1.05;
+    padding:0 8px;
+  }
 
-        <p>
-            Fractals are <strong>infinitely complex patterns</strong> created by repeating a simple process over and over
-            in a continuous feedback loop. Driven by recursion, they are essentially the images of dynamic systems, or,
-            the picture of <strong>Chaos</strong>. Geometrically, fractals exist in between our familiar dimensions, 
-            forming shapes that are neither one nor two dimensional, but something in between.
-        </p>
+  .full-text{
+    display:block;
+    width:100%;
+    max-height:0;
+    opacity:0;
+    overflow:auto;
+    margin-top:12px;
+    transition: max-height .45s ease, opacity .35s ease, transform .35s ease;
+    transform: translateY(8px);
+    color:#f7f7f7;
+    text-align:left;
+  }
+  .full-text p, .full-text ul { margin:0 0 1rem 0; padding-left:1.1rem; }
+  .full-text ul { list-style: disc; }
 
-        <p>
-            Fractals are everywhere in nature. Examples include:
-            <li>Trees and plants</li>
-            <li>Rivers and coastlines</li>
-            <li>Mountains and clouds</li>
-            <li>Seashells and hurricanes</li>
-        </p>
+  .close-btn{
+    display:none;
+    position:absolute;
+    top:12px;
+    right:12px;
+    background:#111;
+    color:#fff;
+    border:1px solid rgba(255,255,255,0.06);
+    padding:8px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    z-index:20;
+    font-family:inherit;
+  }
+  .close-btn:hover{ background:var(--accent); color:#000; }
 
-        <p>
-            Abstract fractals, such as the <strong>Mandelbrot Set</strong>, are generated by computer programs
-            that repeat a simple mathemtical equation endlessly, revealing intricate patterns at every level of
-            magnification.
-        </p>
+  .bubble.expanded{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:86vw;
+    height:74vh;
+    border-radius:12px;
+    padding:28px;
+    z-index:9999;
+    box-shadow:0 30px 80px rgba(0,0,0,0.6);
+    transition: transform .28s cubic-bezier(.2,.9,.2,1), width .38s cubic-bezier(.2,.9,.2,1), height .38s cubic-bezier(.2,.9,.2,1), border-radius .38s;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-start;
+  }
 
-        <h3>Key Characteristics of Fractals</h3>
-        <ul>
-            <li><strong>Self-Similarity:</strong> The pattern repeates itself at smaller and smaller scales</li>
-            <li><strong>Infinite Detail:</strong> Fractals possess intricate structure at all levels of magnification</li>
-            <li><strong>Recursive Structure:</strong> A feedback loop creates the repeating pattern.</li>
-            <li><strong>Fractal Dimension:</strong> Fractals often have a non-integer dimension, reflecting their complexity.</li>
-        </ul>
-        </div>
-    </body>
+  .bubble.expanded h3{
+    font-size:1.9rem;
+    align-self:flex-start;
+    margin-bottom:12px;
+  }
+  .bubble.expanded .full-text{
+    max-height:60vh;
+    opacity:1;
+    transform:translateY(0);
+  }
+  .bubble.expanded .close-btn{ display:block; }
+
+  @media (max-width:700px){
+    .bubble{ --size:140px; }
+    .bubble.expanded{ width:92vw; height:78vh; padding:18px; }
+    .bubble.expanded h3{ font-size:1.4rem; }
+  }
+
+  .nav{ text-align:center; padding:14px 0 28px; }
+  .nav a{
+    color:#fff; text-decoration:none; padding:10px 16px; background:rgba(0,0,0,0.55); border-radius:8px;
+    transition: background .2s;
+  }
+  .nav a:hover{ background:var(--accent); color:#000; }
+
+</style>
+</head>
+<body>
+
+<header>✦ Introduction to Fractals ✦</header>
+<div class="bubble-container" id="bubbleContainer">
+
+  <div class="bubble" aria-expanded="false">
+    <button class="close-btn" aria-hidden="true">✕</button>
+    <h3>What is a Fractal?</h3>
+    <div class="full-text" aria-hidden="true">
+      <p>
+        A <strong>fractal</strong> is a shape or pattern that repeats its structure at different scales — a property
+        called <strong>self-similarity</strong>. Fractals are generated by repeating simple rules and often reveal
+        infinite complexity from compact formulas.
+      </p>
+      <p>
+        They can be produced by iterative mathematical functions (like the Mandelbrot iteration) or appear in nature
+        where the same branching or roughness patterns repeat at multiple scales.
+      </p>
+    </div>
+  </div>
+
+  <div class="bubble" aria-expanded="false">
+    <button class="close-btn" aria-hidden="true">✕</button>
+    <h3>Fractals in Nature</h3>
+    <div class="full-text" aria-hidden="true">
+      <p>Natural examples where fractal patterns appear:</p>
+      <ul>
+        <li>Trees and plant branching</li>
+        <li>Rivers and coastlines (meandering complexity)</li>
+        <li>Mountains, clouds and snowflakes</li>
+        <li>Seashell patterns and hurricanes</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="bubble" aria-expanded="false">
+    <button class="close-btn" aria-hidden="true">✕</button>
+    <h3>Abstract Fractals</h3>
+    <div class="full-text" aria-hidden="true">
+      <p>
+        Abstract fractals are produced by repeating mathematical rules on complex numbers or geometric transforms.
+        The Mandelbrot set and Julia sets are canonical examples — you compute an iteration for each point and color
+        according to the iteration behavior.
+      </p>
+      <p>
+        Computers allowed these sets to be visualized, producing the iconic “infinite detail” images that popularized fractals.
+      </p>
+    </div>
+  </div>
+
+  <div class="bubble" aria-expanded="false">
+    <button class="close-btn" aria-hidden="true">✕</button>
+    <h3>Key Characteristics</h3>
+    <div class="full-text" aria-hidden="true">
+      <ul>
+        <li><strong>Self-Similarity</strong> — repeated structure at different scales</li>
+        <li><strong>Infinite Detail</strong> — more structure appears as you zoom</li>
+        <li><strong>Recursive Generation</strong> — built by iterating rules</li>
+        <li><strong>Fractal Dimension</strong> — often non-integer dimension</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <a href="index.html">◀ Home</a>
+  &nbsp;&nbsp;
+  <a href="history.html">History ➝</a>
+</div>
+
+<script>
+  // safe, defensive JS — no assumptions about malformed elements
+  (function(){
+    const bubbles = Array.from(document.querySelectorAll('.bubble'));
+
+    function collapseAll(){
+      bubbles.forEach(b => {
+        b.classList.remove('expanded');
+        b.setAttribute('aria-expanded','false');
+        const txt = b.querySelector('.full-text');
+        const cb = b.querySelector('.close-btn');
+        if(txt) { txt.setAttribute('aria-hidden','true'); }
+        if(cb) { cb.setAttribute('aria-hidden','true'); }
+      });
+    }
+
+    // clicking outside any bubble collapses
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.bubble')) collapseAll();
+    });
+
+    // keyboard ESC closes
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') collapseAll();
+    });
+
+    bubbles.forEach(bubble => {
+      const fullText = bubble.querySelector('.full-text');
+      const closeBtn = bubble.querySelector('.close-btn');
+
+      // guard: ensure elements exist
+      if (!fullText) return;
+
+      // Expand on bubble click
+      bubble.addEventListener('click', (ev) => {
+        ev.stopPropagation(); // prevent document.click handler
+        // if already expanded do nothing (user should click X to close)
+        if (bubble.classList.contains('expanded')) return;
+
+        collapseAll();
+        bubble.classList.add('expanded');
+        bubble.setAttribute('aria-expanded','true');
+        fullText.setAttribute('aria-hidden','false');
+        if (closeBtn) closeBtn.setAttribute('aria-hidden','false');
+      });
+
+      // close button
+      if (closeBtn){
+        closeBtn.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          bubble.classList.remove('expanded');
+          bubble.setAttribute('aria-expanded','false');
+          fullText.setAttribute('aria-hidden','true');
+          closeBtn.setAttribute('aria-hidden','true');
+        });
+      }
+    });
+
+    // start collapsed
+    collapseAll();
+  })();
+</script>
+</body>
 </html>
