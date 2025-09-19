@@ -10,22 +10,12 @@
     --dark-trans: rgba(0,0,0,0.72);
   }
 
-  html,body {
+  html, body {
     height:100%;
     margin:0;
     font-family:"Times New Roman",serif;
-    background: linear-gradient(120deg,#ff4d4d,#4d79ff,#33cc33);
-    background-size:400% 400%;
-    animation:gradientShift 15s linear infinite;color:#eee;
- }
-
-  @keyframes blobMorph{
-    0%,100%{border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%; }
-    33%{border-radius: 55% 45% 45% 55% / 60% 50% 40% 50%; }
-    66% { border-radius: 40% 60% 50% 50% / 45% 55% 55% 45%; }
-  }
-  .bubble {
-    animation: bloMorph 10s ease-in-out infinite;
+    color:#eee;
+    overflow-x: hidden;
   }
 
   header{
@@ -34,26 +24,55 @@
     font-size:2.6rem;
     color:#fff;
     text-shadow:0 6px 18px rgba(0,0,0,0.6);
+    position: relative;
+    z-index: 2;
   }
 
-  /* bubble area */
+  .background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+  }
+
+  .background-1, .background-2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 2s ease;
+    background-size: cover;
+    background-position: center;
+  }
+
   .bubble-container{
-    box-sizing:border-box;
-    width:100%;
-    min-height:calc(100vh - 120px);
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    align-items:center;
-    gap:28px;
-    padding:28px;
-    position:relative;
+    /*box-sizing: border-box;*/
+    width: 100%;
+    min-height: calc(100vh - 120px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    padding: 28px;
+    position: relative;
+    z-index: 2;
+  }
+
+  @keyframes blobMorph{
+    0%, 100% {border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%; }
+    33% {border-radius: 55% 45% 45% 55% / 60% 50% 40% 50%; }
+    66% {border-radius: 40% 60% 50% 50% / 45% 55% 55% 45%; }
   }
 
   .bubble{
-    --size:200px;
-    width:var(--size);
-    height:var(--size);
+    --size: 200px;
+    width: var(--size);
+    height: var(--size);
     border-radius:50%;
     background:var(--dark-trans);
     display: flex;
@@ -62,22 +81,21 @@
     text-align: center;
     padding: 18px;
     box-shadow:0 12px 26px rgba(0,0,0,0.45);
-    cursor:pointer;
+    cursor: pointer;
     transition: all .35s ease;
-    overflow:hidden;
-    position:relative;
-    
-    border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%;
+    overflow: hidden;
+    position: relative;
+    animation: blobMorph 12s ease-in-out infinite;
   }
 
   .bubble:hover{ transform: scale(1.08); z-index:6; }
 
   .bubble h3{
-    margin:0;
-    color:var(--accent);
-    font-size:1.05rem;
-    line-height:1.05;
-    padding:0 8px;
+    margin: 0;
+    color: var(--accent);
+    font-size: 1.05rem;
+    line-height: 1.05;
+    padding: 0 8px;
   }
 
   .full-text{
@@ -147,7 +165,7 @@
     .bubble.expanded h3{ font-size:1.4rem; }
   }
 
-  .nav{ text-align:center; padding:14px 0 28px; }
+  .nav{ text-align:center; padding:14px 0 28px; z-index: 2; position: relative;}
   .nav a{
     color:#fff; text-decoration:none; padding:10px 16px; background:rgba(0,0,0,0.55); border-radius:8px;
     transition: background .2s;
@@ -158,10 +176,15 @@
 </head>
 <body>
 
-<header>✦ Introduction to Fractals ✦</header>
-<div class="bubble-container" id="bubbleContainer">
+<div id="background-container" class="background-container">
+    <div id="background-1" class="background-1"></div>
+    <div id="background-2" class="background-2"></div>
+</div>
 
-  <div class="bubble" aria-expanded="false">
+<header>✦ Introduction to Fractals ✦</header>
+
+<div class="bubble-container" id="bubbleContainer">
+    <div class="bubble" aria-expanded="false">
     <button class="close-btn" aria-hidden="true">✕</button>
     <h3>What is a Fractal?</h3>
     <div class="full-text" aria-hidden="true">
@@ -218,7 +241,6 @@
       </ul>
     </div>
   </div>
-
 </div>
 
 <div class="nav">
@@ -227,55 +249,40 @@
   <a href="history.html">History ➝</a>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.2/velocity.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/trianglify/3.0.0/trianglify.min.js"></script>
+
 <script>
-  // safe, defensive JS — no assumptions about malformed elements
   (function(){
     const bubbles = Array.from(document.querySelectorAll('.bubble'));
-
     function collapseAll(){
       bubbles.forEach(b => {
         b.classList.remove('expanded');
         b.setAttribute('aria-expanded','false');
         const txt = b.querySelector('.full-text');
         const cb = b.querySelector('.close-btn');
-        if(txt) { txt.setAttribute('aria-hidden','true'); }
-        if(cb) { cb.setAttribute('aria-hidden','true'); }
+        if(txt) txt.setAttribute('aria-hidden','true');
+        if(cb) cb.setAttribute('aria-hidden','true');
       });
     }
-
-    // clicking outside any bubble collapses
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.bubble')) collapseAll();
-    });
-
-    // keyboard ESC closes
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') collapseAll();
-    });
+    document.addEventListener('click', e => { if(!e.target.closest('.bubble')) collapseAll(); });
+    document.addEventListener('keydown', e => { if(e.key==='Escape') collapseAll(); });
 
     bubbles.forEach(bubble => {
       const fullText = bubble.querySelector('.full-text');
       const closeBtn = bubble.querySelector('.close-btn');
-
-      // guard: ensure elements exist
-      if (!fullText) return;
-
-      // Expand on bubble click
-      bubble.addEventListener('click', (ev) => {
-        ev.stopPropagation(); // prevent document.click handler
-        // if already expanded do nothing (user should click X to close)
-        if (bubble.classList.contains('expanded')) return;
-
+      bubble.addEventListener('click', ev => {
+        ev.stopPropagation();
+        if(bubble.classList.contains('expanded')) return;
         collapseAll();
         bubble.classList.add('expanded');
         bubble.setAttribute('aria-expanded','true');
         fullText.setAttribute('aria-hidden','false');
-        if (closeBtn) closeBtn.setAttribute('aria-hidden','false');
+        if(closeBtn) closeBtn.setAttribute('aria-hidden','false');
       });
-
-      // close button
-      if (closeBtn){
-        closeBtn.addEventListener('click', (ev) => {
+      if(closeBtn){
+        closeBtn.addEventListener('click', ev => {
           ev.stopPropagation();
           bubble.classList.remove('expanded');
           bubble.setAttribute('aria-expanded','false');
@@ -284,10 +291,79 @@
         });
       }
     });
-
-    // start collapsed
     collapseAll();
   })();
+
+  // Trianglify background
+    $(document).ready(function(){
+
+    const $bg1 = $('#background-1');
+    const $bg2 = $('#background-2');
+    let toggle = true;
+
+    const colorPalettes = [
+        ["#7b2ff7","#f107a3","#ffb347","#ff7e5f"],
+        ["#00c6ff","#0072ff","#f0f","#0ff"],
+        ["#43e97b","#38f9d7","#ff6a00","#ee0979"]
+    ];
+    let paletteIndex = 0;
+
+    function createPattern() {
+        const width = $(window).width();
+        const height = $(window).height();
+
+        // Generate Trianglify pattern
+        return Trianglify({
+        width: width,
+        height: height,
+        cell_size: 80 + Math.random() * 80,  
+        variance: 0.5 + Math.random() * 1.0,
+        x_colors: colorPalettes[paletteIndex] 
+        });
+    }
+
+    function setBackground($el, pattern) {
+        const svgEl = pattern.svg(); 
+        const serializer = new XMLSerializer();
+        const svgString = serializer.serializeToString(svgEl);
+
+        const svgData = encodeURIComponent(svgString);
+        $el.css('background-image', 'url("data:image/svg+xml;utf8,' + svgData + '")');
+    }
+
+
+    function fadeBackgrounds() {
+        const pattern = createPattern();
+        if (toggle) {
+            setBackground($bg1, pattern);
+            $bg1.velocity("fadeIn", {duration:3000});
+            $bg2.velocity("fadeOut", {duration:3000});
+        } else {
+            setBackground($bg2, pattern);
+            $bg2.velocity("fadeIn", {duration:3000});
+            $bg1.velocity("fadeOut", {duration:3000});
+        }
+        toggle = !toggle;
+
+        paletteIndex = (paletteIndex + 1) % colorPalettes.length;
+    }
+
+    fadeBackgrounds();
+
+    setInterval(fadeBackgrounds, 5000);
+
+    $(window).resize(function(){
+        fadeBackgrounds();
+    });
+
+    });
+
+    //make rectangle with rounded corners when bubble enlarges
+    //mor spaced out, space between calculated based on screen size
+    //white flash when switching between colour schems, more changing of shapes/sizes when in the same colour scheme (change continues for at least 10s in each colour scheme)
+    //bubbles have a more bubble-like shine
+    //position the 4 bubbles at different heights
 </script>
+
 </body>
 </html>
