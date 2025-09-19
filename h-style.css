@@ -1,0 +1,178 @@
+@layer base, rhythm, layout, components, default, overwrites;
+
+html {
+  scroll-snap-type: y mandatory;
+  timeline-scope: --section, --main, --site-header;
+}
+
+body, 
+.content{
+    overflow: hidden;
+    position: fixed;
+    inset: 0;
+
+    --contrast: 4;
+    --blur: 0.5rem;
+    background-color: var(--color-background, black);
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    font-family: "Georgia", serif;;
+    color: white;
+
+    animation: blink ease-in-out both;
+    animation-timeline: --section;
+}
+@keyframes blink {
+    0%,
+    100% {
+        filter: blur(var(--blur)) contrast(var(--contrast));
+        opacity: 0;
+        visibility: hidden;
+    }
+    50% {
+        filter: blur(0) contrast(1);
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+main {
+    view-timeline: --main;
+}
+
+.section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+
+    view-timeline: --section;
+    height: 100dvh;
+}
+
+.indicator::before {
+    animation: indicate linear both;
+    animation-timeline: --main;
+    animation-range: contain;
+}
+
+@keyframes indicate {
+    0% {
+        --color-indicator: var(--color-primary);
+        transform: translateY(0);
+    }
+
+    25% {
+        --color-indicator: var(--color-yellow);
+    }
+
+    50% {
+        --color-indicator: var(--color-secondary);
+    }
+
+    75% {
+        --color-indicator: var(--red);
+    }
+
+    100% {
+        --color-indicator: var(--color-purple);
+        transform: translateY(
+            calc(var(--indicator-total-height) - var(--indicator-size))
+        );
+    }
+}
+
+.site-header label:last-of-type {
+    view-timeline: --site-header inLine;
+}
+
+.site-header::after {
+    animation: fade-scroll ease-in-out both;
+    animation-timeline: --site-header;
+    animation-range: entry-crossing;
+}
+@keyframes fade-scroll {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+/*
+.slide {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  scroll-snap-align: start;
+  padding: 4rem 6rem;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}*/
+
+.slide.active {
+  opacity: 1;
+}
+
+.slide img {
+  max-width: 300px;
+}
+
+.text h2 {
+  font-size: 3.5rem;
+  margin: 0 0 1rem 0;
+}
+
+.text p {
+  font-size: 1.3rem;
+  max-width: 550px;
+  line-height: 1.6;
+}
+
+/* Highlights */
+.highlight-red { color: #ff5252; }
+.highlight-blue { color: #42a5f5; }
+.highlight-purple { color: #ba68c8; }
+
+/* Indicators */
+nav ul.indicator {
+  position: fixed;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+nav ul.indicator li a {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  transition: background 0.3s;
+}
+
+nav ul.indicator li a.active {
+  background: #fff;
+}
+
+.background-container {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.background-layer {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, #1a1a1a, #000);
+}
+

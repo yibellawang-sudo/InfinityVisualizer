@@ -4,205 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>History of Fractals</title>
-    <style>
-        :root {
-            --accent: #ffffff;
-            --bg-dark: rgba(0, 0, 0, 0.85);
-            --indicator-size: 12px;
-        }
-
-        html{
-            scroll-snap-type: y mandatory;
-            timeline-scope: --section, --main, --site-header;
-        }
-
-        body{
-            margin: 0;
-            font-family: "Times New Roman", serif;
-            background-color: #111;
-            color: #eee;
-        }
-
-        main {
-            view-timeline: --main;
-        }
-
-        .section {
-            height: 100dvh;
-            scroll-snap-align: start;
-            height: 100dvh;
-            view-timeline: --section;
-        }
-
-        .content {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 3rem;
-            color: var(--accent);
-            background: rgba(0,0,0,0.65);
-
-            /* Animate in/out with scroll */
-            animation: fadeInOut ease-in-out both;
-            animation-timeline: --section;
-        }
-        @keyframes blink {
-            0%,100% { filer: blur(1rem); opacity: 0; visibility: hidden;}
-            50% { filer: none; opacity: 1; visibility: visible; }
-        }
-
-        @keyframes vertical-scroll {
-            0% { transform: translateY(100%); opacity: 0;}
-            50% { transform: none; opacity: 1; }
-            100% { transform: translateY(-100%); opacity: 0;}
-        }
-
-        @keyframes backwards-scroll {
-            0% { transform: translateY(-100%); opacity: 0; }
-            50% { transform: none; opacity: 1; }
-            100% { transform: translateY(100%); opacity: 0; }
-        }
-
-        @keyframes zoom-scroll {
-            0% { transform: scale(0); opacity: 0; filter: blur(2rem); }
-            50% { transform: scale(1); opacity: 1; filter: none; }
-            100% { transform: scale(1.5); opacity: 0; filter: blur(2rem); }
-        }
-        header.site-header{
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 1rem 2rem;
-            background: var(--bg-dark);
-            z-index: 20;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            font-size: 1.5rem;
-            color: var(--accent);
-        }
-
-        .fieldset-wrapper fieldset {
-            border: none;
-        }
-
-        .fieldset-wrapper label {
-            margin-right: 0.8rem;
-            cursor: pointer;
-            color: var(--accent);
-            background: rgba(255,255,255,0.1);
-            padding: 0.2rem 0.5rem;
-            border-radius: 6px;
-        }
-
-        nav ul.indicator {
-            display: flex;
-            gap: 0.8rem;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul.indicator li a {
-            display: block;
-            width: var(--indicator-size);
-            height: var(--indicator-size);
-            border-radius: 50%;
-            background: var(--accent);
-            opacity: 0.6;
-        }
-
-        section.section {
-            scroll-snap-align: start;
-            height: 100dvh;
-            display: flex;
-            align-content: center;
-            position: relative;
-            padding: 0.5vw;
-            overflow: hidden;
-        }
-
-        section.section .content {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 3rem;
-            color: var(--accent);
-            background: rgba(0,0,0,0.65);
-            overflow: hidden;
-        }
-
-        section img {
-            max-width: 120px;
-            margin-bottom: 1rem;
-        }
-
-        section h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        section p, section ul {
-            max-width: 700px;
-            margin-bottom: 1rem;
-        }
-
-        section ul {
-            list-style: disc;
-            padding-left: 1.2rem;
-            text-align: left;
-        }
-
-        footer {
-            padding: 2rem;
-            text-align: center;
-            background: var(--bg-dark);
-        }
-        
-
-            @keyframes fadeInOut {
-            0%, 100% {
-                opacity: 0;
-                filter: blur(1rem);
-                visibility: hidden;
-            }
-            50% {
-                opacity: 1;
-                filter: blur(0);
-                visibility: visible;
-            }
-        }
-
-        /*bg effect layers*/
-        .background-container {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .background-layer {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background-size: cover;
-            background-position: center;
-            transition: opacity 2s ease;
-        }
-    </style>
+    <link rel="stylesheet" href="h-style.css">
 </head>
 <body>
     <div class="background-container">
@@ -212,71 +14,46 @@
 
     <header class="site-header">
         <h1 class="sr-only">History of Fractals</h1>
-        <div class="fieldset-wrapper">
-            <fieldset>
-
-                <input type="radio" id="blink-effect" name="effect" value="blink" checked class="sr-only">
-                <label for="blink-effect">Blink</label>
-
-                <input type="radio" id="vertical-scroll-effect" name="effect" value="vertical-scroll" class="sr-only">
-                <label for="vertical-scroll-effect">Vertical scroll</label>
-
-                <input type="radio" id="backwards-scroll-effect" name="effect" value="backwards-scroll" class="sr-only">
-                <label for="backwards-scroll-effect">Backwards scroll</label>
-
-                <input type="radio" id="zoom-scroll-effect" name="effect" value="zoom-scroll" class="sr-only">
-                <label for="zoom-scroll-effect">Zoom scroll</label>
-            </fieldset>
-        </div>
-
-        <nav>
-            <ul class="indicator">
-                <li><a href="#early"><span class="sr-only">Early Ideas</span></li>
-                <li><a href="#pioneers"><span class="sr-only">Pioneers</span></li>
-                <li><a href="#mandelbrot"><span class="sr-only">Mandelbrot</span></li>
-                <li><a href="#chaos"><span class="sr-only">Chaos Theory</span></li>
-                <li><a href="#modern"><span class="sr-only">Modern Impact</span></li>
-            </ul>
-        </nav>
     </header>
+    
     <main>
         <section id="early" class="section">
             <div class="content">
-            <h2><strong>First</strong>, the <em>early origins</em></h2>
-            <div class="text">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Cantor_set_integers.svg" alt="Cantor set illustration">
-                <p>The concept of fractals dates back to the 19th century, when mathematicians like Georg Cantor and Helge von Koch explored strange “pathological” objects. Cantor’s set, created by repeatedly removing the middle third of a line, and Koch’s snowflake curve revealed shapes with infinite perimeter but finite area — breaking traditional geometry.</p>
-            </div>
+                <h2><strong>First</strong>, the <em>early origins</em></h2>
+                <div class="text">
+                    <img src="https://assets.codepen.io/197359/flower-white.png" alt="">
+                    <p>The concept of fractals dates back to the 19th century, when mathematicians like Georg Cantor and Helge von Koch explored strange “pathological” objects. Cantor’s set, created by repeatedly removing the middle third of a line, and Koch’s snowflake curve revealed shapes with infinite perimeter but finite area — breaking traditional geometry.</p>
+                </div>
             </div>
         </section>
 
         <section id="pioneers" class="section">
             <div class="content">
-            <h2><strong>Next</strong>, the <em>pioneers</em></h2>
-            <div class="text">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/KochFlake.svg" alt="Koch snowflake">
-                <p>These early “monsters” fascinated but also unsettled mathematicians. Later, Gaston Julia and Pierre Fatou studied the iteration of complex functions in the early 20th century, laying the groundwork for the Julia sets — intricate structures that hinted at the hidden complexity of dynamical systems.</p>
-            </div>
+                <h2><strong>Next</strong>, the <em>pioneers</em></h2>
+                <div class="text">
+                    <img src="https://assets.codepen.io/197359/flower-yellow.png" alt="">
+                    <p>These early “monsters” fascinated but also unsettled mathematicians. Later, Gaston Julia and Pierre Fatou studied the iteration of complex functions in the early 20th century, laying the groundwork for the Julia sets — intricate structures that hinted at the hidden complexity of dynamical systems.</p>
+                </div>
             </div>
         </section>
 
         <section id="mandelbrot" class="section">
             <div class="content">
-            <h2><strong>Then</strong>, Benoît <em>Mandelbrot</em> revolutionizes the field</h2>
-            <div class="text">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Mandel_zoom_00_mandelbrot_set.jpg" alt="Mandelbrot set">
-                <p>In the 1970s, Benoît Mandelbrot unified these ideas under the term <em>fractals</em>, meaning “broken” or “fragmented.” Using computer graphics, he visualized the Mandelbrot set, showing how simple formulas could generate infinite complexity. This gave mathematics a new language to describe roughness, irregularity, and self-similarity in nature.</p>
-            </div>
+                <h2><strong>Then</strong>, Benoît <em>Mandelbrot</em> revolutionizes the field</h2>
+                <div class="text">
+                    <img src="https://assets.codepen.io/197359/flower-blue.png" alt="">
+                    <p>In the 1970s, Benoît Mandelbrot unified these ideas under the term <em>fractals</em>, meaning “broken” or “fragmented.” Using computer graphics, he visualized the Mandelbrot set, showing how simple formulas could generate infinite complexity. This gave mathematics a new language to describe roughness, irregularity, and self-similarity in nature.</p>
+                </div>
             </div>
         </section>
 
         <section id="chaos" class="section">
             <div class="content">
-            <h2><strong>Fractals and</strong> <em>Chaos Theory</em></h2>
-            <div class="text">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Lorenz_attractor_yb.svg" alt="Lorenz attractor">
-                <p>Fractals are deeply tied to chaos theory, which studies systems highly sensitive to initial conditions — the so-called “butterfly effect.” Strange attractors like the Lorenz attractor reveal fractal geometry hidden within weather systems, population models, and fluid dynamics. Fractals became the geometry of chaos.</p>
-            </div>
+                <h2><strong>Fractals and</strong> <em>Chaos Theory</em></h2>
+                <div class="text">
+                    <img src="https://assets.codepen.io/197359/flower-red.png" alt="">
+                    <p>Fractals are deeply tied to chaos theory, which studies systems highly sensitive to initial conditions — the so-called “butterfly effect.” Strange attractors like the Lorenz attractor reveal fractal geometry hidden within weather systems, population models, and fluid dynamics. Fractals became the geometry of chaos.</p>
+                </div>
             </div>
         </section>
 
@@ -284,7 +61,7 @@
             <div class="content">
             <h2><strong>Today</strong>, the <em>modern impact</em></h2>
             <div class="text">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Tree_Fractal.png" alt="Fractal tree">
+                <img src="https://assets.codepen.io/197359/flower-purple.png" alt="">
                 <p>Fractals now influence computer graphics, art, medicine, finance, and physics. From modeling coastlines and blood vessels to generating realistic landscapes in movies and video games, fractals bridge mathematics and the natural world — showing that beauty and order can emerge from chaos.</p>
             </div>
             </div>
@@ -294,3 +71,18 @@
     <footer>
     <p>The infinite beauty of fractals <span class="emoji">✨</span></p>
     </footer>
+
+    <nav>
+        <ul class="indicator">
+            <li><a href="#early"><span class="sr-only">Early Ideas</span></a></li>
+            <li><a href="#pioneers"><span class="sr-only">Pioneers</span></a></li>
+            <li><a href="#mandelbrot"><span class="sr-only">Mandelbrot</span></a></li>
+            <li><a href="#chaos"><span class="sr-only">Chaos Theory</span></a></li>
+            <li><a href="#modern"><span class="sr-only">Modern Impact</span></a></li>
+        </ul>
+    </nav>
+<script src="h-script.js"></script>
+</body>
+</html>
+
+
