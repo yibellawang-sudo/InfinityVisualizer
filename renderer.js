@@ -265,5 +265,3 @@ document.getElementById('power').addEventListener('input', e => {
 
 render();
 
-//info boxes on homescreen still doesn't expand
-//add actual info text

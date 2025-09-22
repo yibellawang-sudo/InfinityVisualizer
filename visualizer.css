@@ -1,0 +1,30 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    font-family: 'Times New Roman', serif;
+    color: #eee;
+    line-height: 1.6;
+
+    background: black;
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+#infoBox {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    max-Width: 350px;
+    padding: 12px 16 px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    font-family: serif;
+    font-size: 14px;
+    border-radius: 8px;
+    line-height: 1.4em;
+    cursor: move;
+}
+#infoBox h2 {
+    margin-top: 0;
+}
+
