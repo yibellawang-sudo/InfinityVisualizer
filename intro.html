@@ -8,21 +8,35 @@
   :root{
     --accent: #ffffff;
     --dark-trans: rgba(0,0,0,0.72);
+    --color-primary: oklch(74% 0.15 32);
+    --color-secondary: oklch(65% 0.13 210);
+    --color-ui: oklch(65% 0.05 210);
+
+    --color-yellow: oklch(80% 0.16 85);
+    --color-green: oklch(60% 0.16 135);
+    --color-red: oklch(65% 0.18 15);
+    --color-green-2: oklch(54% 0.11 164);
+    --color-purple: oklch(62% 0.15 318);
+    --color-red-2: oklch(57% 0.2 15);
+    --font-family-default: 'Times New Roman', Times, Georgia, Garamond, serif;
+    --font-family-heading: 'Fraunces', Didot, 'Bodoni MT', 'Noto Serif Display', 'URW Palladio L', P052, Sylfaen, serif;
+    --font-family-monospace: 'Nimbus Mono PS', 'Courier New', monospace;
   }
 
   html, body {
     height:100%;
     margin:0;
-    font-family:"Times New Roman",serif;
-    color:#eee;
+    font-family:var(--font-family-default);
+    color:black;
     overflow-x: hidden;
   }
 
   header{
     text-align:center;
-    padding:36px 20px 6px;
+    padding:10vh 20vh;
     font-size:2.6rem;
-    color:#fff;
+    font-family:var(--font-family-heading);
+    color:white;
     text-shadow:0 6px 18px rgba(0,0,0,0.6);
     position: relative;
     z-index: 2;
@@ -49,28 +63,29 @@
     background-position: center;
   }
 
+  .background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0.5;
+    z-index: 0;
+    pointer-events: none;
+  }
+
   .bubble-container{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: calc(3vw + 20px);
     justify-content: center;
     align-items: start;
-
     width: 95%;
     min-height: calc(100vh - 120px);
-    padding: 15vh 5vw;
+    padding: 10vh 5vw;
     position: relative;
     z-index: 2;
-  }
-  .bubble-container .bubble:nth-child(1){margin-top: 7vh; }
-  .bubble-container .bubble:nth-child(2){margin-top: 22vh; }
-  .bubble-container .bubble:nth-child(3){margin-top: 6vh; }
-  .bubble-container .bubble:nth-child(4){margin-top: 21vh; }
-
-  @keyframes blobMorph{
-    0%, 100% {border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%; }
-    33% {border-radius: 55% 45% 45% 55% / 60% 50% 40% 50%; }
-    66% {border-radius: 40% 60% 50% 50% / 45% 55% 55% 45%; }
   }
 
   .bubble{
@@ -78,33 +93,37 @@
     width: var(--size);
     height: var(--size);
     border-radius:50%;
-    background:radial-gradient(circle at 30% 30%, rgba(37, 54, 110, 0.416), var(--dark-trans) 70%);
+    background: var(--bubble-base);
     display: flex;
     align-items: center;
-    justify-content: center !important;
+    justify-content: center;
     text-align: center;
     padding: 0;
     box-shadow:0 12px 26px rgba(0,0,0,0.45),
        inset -5px -5px 15px rgba(0,0,0,0.45),
-       inset 5px 5px 15px rgba(25, 50, 120, 0.259);
+       inset 5px 5px 15px rgba(25,50,120,0.259);
     cursor: pointer;
     transition: all .35s ease;
     overflow: hidden;
     position: relative;
-    animation: blobMorph 12s ease-in-out infinite;
+    animation: blobMorph 10s ease-in-out infinite, bubbleColorShift 10s ease-in-out infinite alternate;
   }
 
-  .bubble::before {
-    content: "";
-    position: absolute;
-    top: 10%;
-    left: 20%;
-    width: 50%;
-    height: 30%;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 80%);
-    transform: rotate(-20deg);
-    pointer-events: none;
+  @keyframes blobMorph{
+    0%, 100% {border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%; }
+    33% {border-radius: 55% 45% 45% 55% / 60% 50% 40% 50%; }
+    66% {border-radius: 40% 60% 50% 50% / 45% 55% 55% 45%; }
+  }
+
+  @keyframes bubbleColorShift{
+    0% { background: var(--color-red);}
+    14.3% { background: var(--color-primary);}
+    28.6% { background: var(--color-yellow);}
+    42.9% { background: var(--color-green);}
+    57.2% { background: var(--color-green-2);}
+    71.5% { background: var(--color-secondary);}
+    85.8% { background: var(--color-purple);}
+    100% { background: var(--color-red-2);}
   }
 
   .bubble:hover{ transform: scale(1.08); z-index:6; }
@@ -114,7 +133,13 @@
     color: var(--accent);
     font-size: 1.05rem;
     line-height: 1.05;
-    text-align: center !important;
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family:var(--font-family-heading);
   }
 
   .full-text{
@@ -127,57 +152,46 @@
     transition: max-height .45s ease, opacity .35s ease, transform .35s ease;
     transform: translateY(8px);
     color:#f7f7f7;
-    text-align:left;
+    text-align:center;
   }
-  .full-text p, .full-text ul { margin:0 0 1rem 0; padding-left:1.1rem; }
-  .full-text ul { list-style: disc; }
-
-  .close-btn{
-    display:none;
-    position:absolute;
-    top:12px;
-    right:12px;
-    background:#111;
-    color:#fff;
-    border:1px solid rgba(255,255,255,0.06);
-    padding:8px 10px;
-    border-radius:6px;
-    cursor:pointer;
-    z-index:20;
-    font-family:inherit;
-  }
-  .close-btn:hover{ background:var(--accent); color:#000; }
 
   .bubble.expanded{
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform:translate(-50%,-50%);
+    margin: 0 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     width: 80%;
     height: 70%;
     border-radius:12px !important;
     padding:28px;
     z-index:9999;
     box-shadow:0 30px 80px rgba(0,0,0,0.6);
-    transition: transform .28s cubic-bezier(.2,.9,.2,1), width .38s cubic-bezier(.2,.9,.2,1), height .38s cubic-bezier(.2,.9,.2,1), border-radius .38s;
     display:flex;
     flex-direction:column;
-    align-items:flex-start;
+    align-items:center;
     justify-content:flex-start;
   }
 
   .bubble.expanded h3{
     font-size:1.9rem;
-    align-self:flex-start;
     margin-bottom:12px;
-    text-align: center !important;
+    text-align: center;
+    position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    width: 100%;
   }
+
   .bubble.expanded .full-text{
     max-height:60vh;
     opacity:1;
     transform:translateY(0);
   }
-  .bubble.expanded .close-btn{ display:block; }
+  
+  .close-btn{ display:none; position:absolute; top:12px; right:12px; background:#111; color:#fff; border:1px solid rgba(255,255,255,0.06); padding:8px 10px; border-radius:6px; cursor:pointer; z-index:20; font-family:inherit; }
+  .close-btn:hover{ background:var(--accent); color:#000; }
 
   @media (max-width:700px){
     .bubble{ --size:140px; }
@@ -199,6 +213,7 @@
   <div id="background-container" class="background-container">
       <div id="background-1" class="background-1"></div>
       <div id="background-2" class="background-2"></div>
+      <div class="background-overlay"></div>
   </div>
 
   <header>✦ Introduction to Fractals ✦</header>
@@ -244,7 +259,7 @@
           according to the iteration behavior.
         </p>
         <p>
-          Computers allowed these sets to be visualized, producing the iconic “infinite detail” images that popularized fractals.
+          Computers allowed these sets to be visualized, producing the iconic "infinite detail" images that popularized fractals.
         </p>
       </div>
     </div>
@@ -314,31 +329,52 @@
       collapseAll();
     })();
 
-    // Trianglify background
-      $(document).ready(function(){
+    // Enhanced Trianglify background with more varied light/dark distribution
+    $(document).ready(function(){
 
       const $bg1 = $('#background-1');
       const $bg2 = $('#background-2');
       let toggle = true;
 
+      // Pure grayscale palettes for background
       const colorPalettes = [
-          ["#7b2ff7","#f107a3","#ffb347","#ff7e5f"],
-          ["#00c6ff","#0072ff","#f0f","#0ff"],
-          ["#43e97b","#38f9d7","#ff6a00","#ee0979"]
+          ["#000000", "#1a1a1a", "#333333", "#4d4d4d", "#666666", "#808080", "#999999", "#b3b3b3", "#cccccc"],
+          ["#0f0f0f", "#262626", "#404040", "#595959", "#737373", "#8c8c8c", "#a6a6a6", "#bfbfbf"],
+          ["#050505", "#1f1f1f", "#353535", "#4a4a4a", "#5f5f5f", "#757575", "#8a8a8a", "#9f9f9f"],
+          ["#0a0a0a", "#222222", "#3a3a3a", "#525252", "#6b6b6b", "#838383", "#9c9c9c", "#b5b5b5"],
+          ["#111111", "#2a2a2a", "#434343", "#5c5c5c", "#757575", "#8e8e8e", "#a7a7a7", "#c0c0c0"]
       ];
+     
       let paletteIndex = 0;
+
+      function shuffleArray(array) {
+          const shuffled = [...array];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          return shuffled;
+      }
 
       function createPattern() {
           const width = $(window).width();
           const height = $(window).height();
 
-          // Generate Trianglify pattern
+          // Randomly shuffle the color palette to vary light/dark distribution
+          const shuffledPalette = shuffleArray(colorPalettes[paletteIndex]);
+          
+          // Add some random variation to cell size and variance for more organic patterns
+          const cellSize = 80 + Math.random() * 120;
+          const variance = 0.8 + Math.random() * 1.4;
+
+          // Generate Trianglify pattern with shuffled colors
           return Trianglify({
-          width: width,
-          height: height,
-          cell_size: 100 + Math.random() * 100,  
-          variance: 1.0 + Math.random() * 1.0,
-          x_colors: colorPalettes[paletteIndex] 
+              width: width,
+              height: height,
+              cell_size: cellSize,  
+              variance: variance,
+              x_colors: shuffledPalette,
+              y_colors: shuffleArray([...shuffledPalette]) // Also shuffle y_colors for more variation
           });
       }
 
@@ -349,37 +385,37 @@
 
           const svgData = encodeURIComponent(svgString);
           $el.css({
-          'background-image': 'url("data:image/svg+xml;utf8,' + svgData + '")',
-          'background-size': 'cover',
-          'opacity': 0.9
-
-        });
+              'background-image': 'url("data:image/svg+xml;utf8,' + svgData + '")',
+              'background-size': 'cover',
+              'opacity': 0.9
+          });
       }
-
 
       function fadeBackgrounds() {
           const pattern1 = createPattern();
+          
+          // Create a second pattern with a different palette for more variation
+          paletteIndex = (paletteIndex + 1) % colorPalettes.length;
           const pattern2 = createPattern();
 
           if (toggle) {
               setBackground($bg1, pattern1);
-              setBackground($bg1, pattern2);
-              $bg1.velocity("fadeIn", {duration:3000});
-              $bg2.velocity("fadeOut", {duration:4000});
+              $bg1.velocity("fadeIn", {duration: 3000});
+              $bg2.velocity("fadeOut", {duration: 5000});
           } else {
-              setBackground($bg2, pattern1);
               setBackground($bg2, pattern2);
-              $bg2.velocity("fadeIn", {duration:3000});
-              $bg1.velocity("fadeOut", {duration: 4000});
+              $bg2.velocity("fadeIn", {duration: 3000});
+              $bg1.velocity("fadeOut", {duration: 5000});
           }
           toggle = !toggle;
 
+          // Move to next palette for the next iteration
           paletteIndex = (paletteIndex + 1) % colorPalettes.length;
       }
 
       fadeBackgrounds();
 
-      setInterval(fadeBackgrounds, 5000);
+      setInterval(fadeBackgrounds, 7000);
 
       $(window).resize(function(){
           fadeBackgrounds();
@@ -388,4 +424,6 @@
   </script>
 </body>
 </html>
-
+<!--
+3. add footer to history.html
+-->

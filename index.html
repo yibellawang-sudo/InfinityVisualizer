@@ -37,30 +37,33 @@
         
         <script>
             const total = 200;
-            //color palette
             const colors = [
-                'oklch(74% 0.15 32)',   
-                'oklch(65% 0.13 210)',  
-                'oklch(65% 0.05 210)',  
-                'oklch(80% 0.16 85)',   
-                'oklch(60% 0.16 135)',  
-                'oklch(65% 0.18 15)',  
-                'oklch(54% 0.11 164)',  
-                'oklch(62% 0.15 318)',  
-                'oklch(57% 0.2 15)'     
+                'oklch(74% 0.15 32)',   // primary
+                'oklch(65% 0.13 210)',  // secondary
+                'oklch(65% 0.05 210)',  // ui
+                'oklch(80% 0.16 85)',   // yellow
+                'oklch(60% 0.16 135)',  // green
+                'oklch(65% 0.18 15)',   // red
+                'oklch(54% 0.11 164)',  // green-2
+                'oklch(62% 0.15 318)',  // purple
+                'oklch(57% 0.2 15)'     // red-2
             ];
+            
             const wrap = document.getElementById("triWrap");
+            const triangles = [];
+            let currentColorIndex = 0;
+
+            // Create a style element for keyframes
             const style = document.createElement('style');
             document.head.appendChild(style);
 
             for (let i = 0; i < total; i++) {
                 const size = Math.floor(Math.random() * 50) + 10;
                 const rotate = Math.random() * 360;
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
+                
                 const tri = document.createElement("div");
                 tri.className = "tri";
-                tri.style.borderTop = `${size}px solid ${randomColor}`;
+                tri.style.borderTop = `${size}px solid ${colors[0]}`;
                 tri.style.borderRight = `${size}px solid transparent`;
                 tri.style.borderLeft = `${size}px solid transparent`;
                 tri.style.marginLeft = `-${size/2}px`;
@@ -68,29 +71,47 @@
                 tri.style.transform = `rotate(${rotate}deg) translate3d(0,0,-1500px) scale(0)`;
 
                 const animName = `anim${i}`;
-                const keyframes =`
+                const keyframes = `
                     @keyframes ${animName} {
                         0% {
                             opacity: 1;
-                            transform: rotate(${rotate*1.5}deg)
-                            translate3d(${Math.random() * 1000}px, ${Math.random()*1000}px, 1000px)
-                            scale(1);
+                            transform: rotate(${rotate * 1.5}deg) translate3d(${Math.random() * 1000}px, ${Math.random() * 1000}px, 1000px) scale(1);
                         }
                         100% {
                             opacity: 0;
-                            transform: rotate(${rotate*1.5}deg)
-                            translate3d(0, 0, -1500px) 
-                            scale(0);
+                            transform: rotate(${rotate * 1.5}deg) translate3d(0, 0, -1500px) scale(0);
                         }
                     }
                 `;
+                
                 style.appendChild(document.createTextNode(keyframes));
-
+                
                 tri.style.animation = `${animName} 10s infinite linear`;
                 tri.style.animationDelay = `${i * -(10/total)}s`;
 
+                triangles.push(tri);
                 wrap.appendChild(tri);
             }
+
+            // Color shifting function
+            function updateColors() {
+                const currentColor = colors[currentColorIndex];
+                
+                // Update all triangles
+                triangles.forEach(tri => {
+                    const borderWidth = tri.style.borderTopWidth;
+                    tri.style.borderTop = `${borderWidth} solid ${currentColor}`;
+                });
+                
+                // Update background gradient
+                //document.body.style.backgroundImage = `radial-gradient(circle at center, ${currentColor} 0%, #222 10%, black 60%)`;
+                
+                // Move to next color
+                //currentColorIndex = (currentColorIndex + 1) % colors.length;
+            }
+
+            // Change colors every 3 seconds
+            //setInterval(updateColors, 3000);
         </script>
     </body>
 </html>

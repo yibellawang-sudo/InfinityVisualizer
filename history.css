@@ -3,7 +3,7 @@
 @layer base {
   :root {
     /*Fonts and text*/
-    --font-family-default: 'Noto Sans Display', Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+    --font-family-default: 'Times New Roman',Times,'Georgia', 'Garamond', serif;
     --font-family-heading: 'Fraunces', Didot, 'Bodoni MT', 'Noto Serif Display', 'URW Palladio L', P052, Sylfaen, serif;
     --font-family-monospace: 'Nimbus Mono PS', 'Courier New', monospace;
 
@@ -331,7 +331,12 @@
         width: var(--indicator-size);
         height: var(--indicator-size);
     }
-
+    .nav{ text-align:center; padding:40vh; z-index: 2; position: relative;}
+    .nav a{
+        color:#fff; text-decoration:none; padding:10px 16px; background:rgba(0,0,0,0.55); border-radius:8px;
+        transition: background .2s;
+    }
+    .nav a:hover{ background:white; color:black; }
     section {
         scroll-snap-align: start;
         scroll-snap-stop: always;
