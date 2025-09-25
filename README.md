@@ -1,4 +1,7 @@
 # InfinityVisualizer
 Welcome to Infinity Visualizer, a website I created to introduce and demonstrate fractals - creations of mathematics, beauty, and a hint of chaos. Here you’ll find explanations on what fractals are, where they are found in nature, their history and origins, development, relation to chaos theory, and modern applications! 
 I also built interactive (and pretty!) demos of the Mandelbrot set, Julia sets, and the burning ship, which allow users to zoom in and play with parameters, along with explanations of the equations behind them. My goal is to make fractals feel alive and accessible, so whether you’re a math enthusiast, an artist searching for inspiration, or simply someone who enjoys beautiful patterns, you should check this out! 
-This site is built with lightweight HTML, CSS, and JavaScript to ensure a smooth and interactive experience, while also experimenting with website design and aesthetics. 
+
+I created this project because I’ve always been fascinated by the intersection of mathematics and visual art. Fractals, in particular, capture that tension perfectly—they’re rooted in equations, but the results are mesmerizing and almost magical.
+This site is built with lightweight HTML, CSS, and JavaScript to ensure a smooth and interactive experience, while also experimenting with website design and aesthetics. One of the biggest challenges was implementing the blink scrolling effect on the History and Origins page—making the text appear, disappear, and reappear in a way that felt smooth, readable, and visually engaging without disrupting the page's flow. From this, I learned a lot about timing, CSS animations, and balancing performance with aesthetic design. 
+
