@@ -28,3 +28,9 @@ body, html {
     margin-top: 0;
 }
 
+.nav{ text-align:center; padding:40vh; z-index: 2; position: relative;}
+.nav a{
+    color:#fff; text-decoration:none; padding:10px 16px; background:rgba(0,0,0,0.55); border-radius:8px;
+    transition: background .2s;
+}
+.nav a:hover{ background:white; color:black; }

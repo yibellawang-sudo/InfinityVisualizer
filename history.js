@@ -12,3 +12,6 @@ document.querySelectorAll('nav a').forEach(link => {
         }
     });
 });
+
+//Make video showing off project
+//write project description
