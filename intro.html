@@ -29,6 +29,7 @@
     font-family:var(--font-family-default);
     color:black;
     overflow-x: hidden;
+    scroll-behavior: smooth;
   }
 
   header{
@@ -40,6 +41,20 @@
     text-shadow:0 6px 18px rgba(0,0,0,0.6);
     position: relative;
     z-index: 2;
+    animation: headerFadeIn 1.2s ease-out;
+  }
+
+  @keyframes headerFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    font-family: var(--font-family-default);
+    margin-top: 12px;
+    opacity: 0.9;
+    font-style: italic;
   }
 
   .background-container {
@@ -73,6 +88,7 @@
     opacity: 0.5;
     z-index: 0;
     pointer-events: none;
+    transition: opacity 0.3s ease;
   }
 
   .bubble-container{
@@ -89,7 +105,7 @@
   }
 
   .bubble{
-    --size: 200px;
+    --size: 270px;
     width: var(--size);
     height: var(--size);
     border-radius:50%;
@@ -106,24 +122,31 @@
     transition: all .35s ease;
     overflow: hidden;
     position: relative;
-    animation: blobMorph 10s ease-in-out infinite, bubbleColorShift 10s ease-in-out infinite alternate;
+    animation: blobMorph 10s ease-in-out infinite, bubbleColorShift 10s ease-in-out infinite alternate, bubbleEntrance 0.6s ease-out backwards;
   }
+  
+  @keyframes bubbleEntrance {
+    from { opacity: 0; transform: scale(0.3); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
   .bubble-container .bubble:nth-child(1){
     margin-top: 0vh; 
-    animation-delay: 0s;
+    animation-delay: 0s, 0s, 0.1s;
   }
   .bubble-container .bubble:nth-child(2){
     margin-top: 11vh;
-    animation-delay: 0.7s;
+    animation-delay: 0.7s, 0.7s, 0.25s;
   }
   .bubble-container .bubble:nth-child(3){
     margin-top: -2vh; 
-    animation-delay: 1.4s;
+    animation-delay: 1.4s, 1.4s, 0.4s;
   }
   .bubble-container .bubble:nth-child(4){
     margin-top: 8vh; 
-    animation-delay: 2.1s;
+    animation-delay: 2.1s, 2.1s, 0.55s;
   }
+  
   @keyframes blobMorph{
     0%, 100% {border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%; }
     33% {border-radius: 55% 45% 45% 55% / 60% 50% 40% 50%; }
@@ -141,7 +164,30 @@
     100% { background: var(--color-red-2);}
   }
 
-  .bubble:hover{ transform: scale(1.08); z-index:6; }
+  .bubble:hover{ 
+    transform: scale(1.08); 
+    z-index:6;
+    box-shadow:0 16px 36px rgba(0,0,0,0.55),
+       inset -5px -5px 15px rgba(0,0,0,0.45),
+       inset 5px 5px 15px rgba(25,50,120,0.259);
+  }
+
+  .bubble::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 35%;
+    height: 35%;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .bubble:hover::before {
+    opacity: 1;
+  }
 
   .bubble h3{
     margin: 0;
@@ -155,6 +201,11 @@
     top: 50%;
     transform: translate(-50%, -50%);
     font-family:var(--font-family-heading);
+    transition: all 0.3s ease;
+  }
+
+  .bubble:hover h3 {
+    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
   }
 
   .full-text{
@@ -167,7 +218,26 @@
     transition: max-height .45s ease, opacity .35s ease, transform .35s ease;
     transform: translateY(8px);
     color:#f7f7f7;
-    text-align:center;
+    text-align:left;
+    line-height: 1.6;
+    padding: 0 8px;
+  }
+
+  .full-text p {
+    margin: 0 0 16px 0;
+  }
+
+  .full-text ul {
+    margin: 12px 0;
+    padding-left: 24px;
+  }
+
+  .full-text li {
+    margin: 8px 0;
+  }
+
+  .full-text strong {
+    color: rgba(255,255,255,0.95);
   }
 
   .bubble.expanded{
@@ -176,55 +246,154 @@
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
-    width: 80%;
-    height: 70%;
-    border-radius:12px !important;
-    padding:28px;
+    width: min(800px, 85%);
+    max-height: 80vh;
+    height: auto;
+    border-radius:16px !important;
+    padding:32px;
     z-index:9999;
-    box-shadow:0 30px 80px rgba(0,0,0,0.6);
+    box-shadow:0 30px 80px rgba(0,0,0,0.7), 0 0 0 2px rgba(255,255,255,0.1);
     display:flex;
     flex-direction:column;
-    align-items:center;
+    align-items:flex-start;
     justify-content:flex-start;
+    animation: expandBubble 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), expandedMorph 8s ease-in-out infinite, bubbleColorShift 10s ease-in-out infinite alternate;
+    backdrop-filter: blur(10px);
+  }
+
+  @keyframes expandedMorph {
+    0%, 100% { border-radius: 16px 18px 16px 18px; }
+    25% { border-radius: 18px 16px 18px 16px; }
+    50% { border-radius: 16px 18px 16px 18px; }
+    75% { border-radius: 18px 16px 18px 16px; }
+  }
+
+  @keyframes expandBubble {
+    from {
+      transform: translate(-50%, -50%) scale(0.5);
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .bubble.expanded::before {
+    opacity: 0;
   }
 
   .bubble.expanded h3{
-    font-size:1.9rem;
-    margin-bottom:12px;
-    text-align: center;
+    font-size:2rem;
+    margin-bottom:18px;
+    text-align: left;
     position: static;
     transform: none;
     left: auto;
     top: auto;
     width: 100%;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.5);
   }
 
   .bubble.expanded .full-text{
-    max-height:60vh;
+    max-height:calc(80vh - 120px);
     opacity:1;
     transform:translateY(0);
   }
 
-  .close-btn{ display:none; position:absolute; top:12px; right:12px; background:#111; color:#fff; border:1px solid rgba(255,255,255,0.06); padding:8px 10px; border-radius:6px; cursor:pointer; z-index:20; font-family:inherit; }
-  .close-btn:hover{ background:var(--accent); color:#000; }
+  .close-btn{ 
+    display: none;
+    position:absolute; 
+    top:16px; 
+    right:16px; 
+    background:rgba(0,0,0,0.6); 
+    color:#fff; 
+    border:1px solid rgba(255,255,255,0.15); 
+    padding:8px 14px; 
+    border-radius:50%; 
+    cursor:pointer; 
+    z-index:20; 
+    font-family:inherit;
+    font-size: 1.2rem;
+    line-height: 1;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .bubble.expanded .close-btn {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .close-btn:hover{ 
+    background:var(--accent); 
+    color:#000;
+    transform: rotate(90deg) scale(1.1);
+  }
 
   @media (max-width:700px){
+    header { padding: 8vh 5vw; font-size: 2rem; }
     .bubble{ --size:140px; }
-    .bubble.expanded{ width:92vw; height:78vh; padding:18px; }
-    .bubble.expanded h3{ font-size:1.4rem; }
+    .bubble.expanded{ 
+      width:92vw; 
+      max-height:85vh; 
+      padding:24px; 
+    }
+    .bubble.expanded h3{ font-size:1.5rem; }
   }
-  .nav{ text-align:center; padding:40vh; z-index: 2; position: relative;}
+
+  .nav{ 
+    text-align:center; 
+    padding:5vh 0; 
+    z-index: 2; 
+    position: relative;
+  }
+  
   .nav a{
-      color:#fff; text-decoration:none; padding:10px 16px; background:rgba(0,0,0,0.55); border-radius:8px;
-      transition: background .2s;
+    color:#fff; 
+    text-decoration:none; 
+    padding:12px 20px; 
+    background:rgba(0,0,0,0.6); 
+    border-radius:8px;
+    transition: all .25s ease;
+    display: inline-block;
+    font-size: 1rem;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
   }
-  .nav a:hover{ background:white; color:black; }
-  .nav{ text-align:center; padding:14px 0 28px; z-index: 2; position: relative;}
-  .nav a{
-    color:#fff; text-decoration:none; padding:10px 16px; background:rgba(0,0,0,0.55); border-radius:8px;
-    transition: background .2s;
+  
+  .nav a:hover{ 
+    background:var(--accent); 
+    color:#000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255,255,255,0.3);
   }
-  .nav a:hover{ background:var(--accent); color:#000; }
+
+  /* Scrollbar styling */
+  .full-text::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .full-text::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+  }
+
+  .full-text::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 4px;
+  }
+
+  .full-text::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.5);
+  }
 
 </style>
 </head>
@@ -236,11 +405,13 @@
       <div class="background-overlay"></div>
   </div>
 
-  <header>✦ Introduction to Fractals ✦</header>
+  <header>
+    ✦ Introduction to Fractals ✦
+  </header>
 
   <div class="bubble-container" id="bubbleContainer">
-      <div class="bubble" aria-expanded="false">
-      <button class="close-btn" aria-hidden="true">✕</button>
+      <div class="bubble" aria-expanded="false" role="button" tabindex="0">
+      <button class="close-btn" aria-label="Close" aria-hidden="true">✕</button>
       <h3>What is a Fractal?</h3>
       <div class="full-text" aria-hidden="true">
         <p>
@@ -263,8 +434,8 @@
       </div>
     </div>
 
-    <div class="bubble" aria-expanded="false">
-      <button class="close-btn" aria-hidden="true">✕</button>
+    <div class="bubble" aria-expanded="false" role="button" tabindex="0">
+      <button class="close-btn" aria-label="Close" aria-hidden="true">✕</button>
       <h3>Fractals in Nature</h3>
       <div class="full-text" aria-hidden="true">
         <p>Some natural phenomena that exhibit fractal patterns include:</p>
@@ -285,8 +456,8 @@
       </div>
     </div>
 
-    <div class="bubble" aria-expanded="false">
-      <button class="close-btn" aria-hidden="true">✕</button>
+    <div class="bubble" aria-expanded="false" role="button" tabindex="0">
+      <button class="close-btn" aria-label="Close" aria-hidden="true">✕</button>
       <h3>Abstract Fractals</h3>
       <div class="full-text" aria-hidden="true">
         <p>
@@ -310,8 +481,8 @@
       </div>
     </div>
 
-    <div class="bubble" aria-expanded="false">
-      <button class="close-btn" aria-hidden="true">✕</button>
+    <div class="bubble" aria-expanded="false" role="button" tabindex="0">
+      <button class="close-btn" aria-label="Close" aria-hidden="true">✕</button>
       <h3>Key Characteristics</h3>
       <div class="full-text" aria-hidden="true">
         <ul>
@@ -345,6 +516,7 @@
   <script>
     (function(){
       const bubbles = Array.from(document.querySelectorAll('.bubble'));
+      
       function collapseAll(){
         bubbles.forEach(b => {
           b.classList.remove('expanded');
@@ -355,21 +527,38 @@
           if(cb) cb.setAttribute('aria-hidden','true');
         });
       }
-      document.addEventListener('click', e => { if(!e.target.closest('.bubble')) collapseAll(); });
-      document.addEventListener('keydown', e => { if(e.key==='Escape') collapseAll(); });
+      
+      document.addEventListener('click', e => { 
+        if(!e.target.closest('.bubble')) collapseAll(); 
+      });
+      
+      document.addEventListener('keydown', e => { 
+        if(e.key==='Escape') collapseAll(); 
+      });
 
       bubbles.forEach(bubble => {
         const fullText = bubble.querySelector('.full-text');
         const closeBtn = bubble.querySelector('.close-btn');
-        bubble.addEventListener('click', ev => {
-          ev.stopPropagation();
+        
+        const expandBubble = (ev) => {
+          if(ev) ev.stopPropagation();
           if(bubble.classList.contains('expanded')) return;
           collapseAll();
           bubble.classList.add('expanded');
           bubble.setAttribute('aria-expanded','true');
           fullText.setAttribute('aria-hidden','false');
           if(closeBtn) closeBtn.setAttribute('aria-hidden','false');
+        };
+        
+        bubble.addEventListener('click', expandBubble);
+        
+        bubble.addEventListener('keydown', (ev) => {
+          if(ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            expandBubble(ev);
+          }
         });
+        
         if(closeBtn){
           closeBtn.addEventListener('click', ev => {
             ev.stopPropagation();
@@ -380,17 +569,15 @@
           });
         }
       });
+      
       collapseAll();
     })();
 
-    // Enhanced Trianglify background with more varied light/dark distribution
     $(document).ready(function(){
-
       const $bg1 = $('#background-1');
       const $bg2 = $('#background-2');
       let toggle = true;
 
-      // Pure grayscale palettes for background
       const colorPalettes = [
           ["#000000", "#1a1a1a", "#333333", "#4d4d4d", "#666666", "#808080", "#999999", "#b3b3b3", "#cccccc"],
           ["#0f0f0f", "#262626", "#404040", "#595959", "#737373", "#8c8c8c", "#a6a6a6", "#bfbfbf"],
@@ -413,22 +600,17 @@
       function createPattern() {
           const width = $(window).width();
           const height = $(window).height();
-
-          // Randomly shuffle the color palette to vary light/dark distribution
           const shuffledPalette = shuffleArray(colorPalettes[paletteIndex]);
-          
-          // Add some random variation to cell size and variance for more organic patterns
           const cellSize = 80 + Math.random() * 120;
           const variance = 0.8 + Math.random() * 1.4;
 
-          // Generate Trianglify pattern with shuffled colors
           return Trianglify({
               width: width,
               height: height,
               cell_size: cellSize,  
               variance: variance,
               x_colors: shuffledPalette,
-              y_colors: shuffleArray([...shuffledPalette]) // Also shuffle y_colors for more variation
+              y_colors: shuffleArray([...shuffledPalette])
           });
       }
 
@@ -436,7 +618,6 @@
           const svgEl = pattern.svg(); 
           const serializer = new XMLSerializer();
           const svgString = serializer.serializeToString(svgEl);
-
           const svgData = encodeURIComponent(svgString);
           $el.css({
               'background-image': 'url("data:image/svg+xml;utf8,' + svgData + '")',
@@ -447,8 +628,6 @@
 
       function fadeBackgrounds() {
           const pattern1 = createPattern();
-          
-          // Create a second pattern with a different palette for more variation
           paletteIndex = (paletteIndex + 1) % colorPalettes.length;
           const pattern2 = createPattern();
 
@@ -462,18 +641,12 @@
               $bg1.velocity("fadeOut", {duration: 5000});
           }
           toggle = !toggle;
-
-          // Move to next palette for the next iteration
           paletteIndex = (paletteIndex + 1) % colorPalettes.length;
       }
 
       fadeBackgrounds();
-
       setInterval(fadeBackgrounds, 7000);
-
-      $(window).resize(function(){
-          fadeBackgrounds();
-      });
+      $(window).resize(fadeBackgrounds);
     });
   </script>
 </body>

@@ -88,7 +88,22 @@
       <a href="visualizer.html">Explore the Visualizer ➝</a>
     </div>
   </section>
-    <script src="history.js" defer></script>
+    <script>
+      document.querySelectorAll('nav a').forEach(link => {
+          link.addEventListener('click', (e) => {
+              e.preventDefault();
+              const targetId = link.getAttribute('href').substring(1);
+              const targetSection = document.getElementById(targetId);
+
+              if (targetSection) {
+                  targetSection.scrollIntroView({
+                      behavior: 'smooth',
+                      block: 'start'
+                  });
+              }
+          });
+      });
+    </script>
   </body>
 </html>
 
